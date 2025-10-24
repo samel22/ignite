@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IGNITE 2025 | Accathon Startup Challenge</title>
+  <meta name="description" content="IGNITE 2025 - A 48-hour Accathon where dreamers become founders. Build, pitch, and launch your startup. Join the fire." />
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@300;400;600;700&family=Monument+Extended:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- AOS Animation -->
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+  <!-- GSAP (for future use) -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #FF3B00;
+      --secondary: #FF6B00;
+      --dark: #0F0F1A;
+      --light: #F8F9FA;
+      --gradient: linear-gradient(135deg, #FF3B00, #FF6B00, #FF8B3D);
+      --glow: 0 0 20px rgba(255, 59, 0, 0.6);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--dark); color: var(--light); font-family: 'Inter', sans-serif; overflow-x: hidden; scroll-behavior: smooth; }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #111; }
+    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+
+    /* Navigation */
+    nav {
+      position: fixed; top: 0; width: 100%; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center;
+      z-index: 1000; backdrop-filter: blur(10px); background: rgba(15,15,26,0.8); border-bottom: 1px solid rgba(255,59,0,0.2);
+    }
+    .nav-logo { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .nav-links { display: flex; gap: 2rem; }
+    .nav-links a { color: var(--light); text-decoration: none; font-weight: 500; position: relative; }
+    .nav-links a::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background: var(--primary); transition: width 0.3s; }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* Hero Section */
+    #hero {
+      height: 100vh; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden;
+    }
+    #three-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+    #fire-container { position: absolute; inset: 0; pointer-events: none; z-index: 2; overflow: hidden; }
+    .hero-content { position: relative; z-index: 3; text-align: center; max-width: 900px; padding: 2rem; }
+
+    .logo {
+      font-family: 'Orbitron', sans-serif; font-size: 5rem; font-weight: 900;
+      background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      text-shadow: var(--glow); margin-bottom: 1rem; animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.05);} }
+
+    .tagline { font-size: 1.5rem; margin: 1rem 0; font-weight: 300; opacity: 0.9; }
+    .countdown { display: flex; justify-content: center; gap: 2rem; margin: 2rem 0; font-family: 'Monument Extended', sans-serif; }
+    .time-box { text-align: center; }
+    .time-box span { display: block; font-size: 3rem; font-weight: 700; color: var(--primary); text-shadow: var(--glow); }
+    .time-label { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; }
+
+    .cta-button {
+      background: var(--gradient); color: white; border: none; padding: 1rem 2.5rem; font-size: 1.2rem;
+      font-weight: 600; border-radius: 50px; cursor: pointer; box-shadow: var(--glow); transition: all 0.3s ease;
+      margin: 1rem; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .cta-button:hover { transform: translateY(-5px); box-shadow: 0 0 30px rgba(255,59,0,0.8); }
+
+    /* Fire Particles */
+    .fire {
+      position: absolute;
+      bottom: -10px;
+      width: 6px; height: 6px;
+      background: radial-gradient(circle at 30% 30%, #ffff80, #ff6b00, #ff3b00, #c41e00);
+      border-radius: 50%;
+      box-shadow: 0 0 8px #ff6b00, 0 0 16px #ff3b00, 0 0 24px #ff8b3d;
+      opacity: 0.9;
+      pointer-events: none;
+      will-change: transform, opacity;
+      transform: translateZ(0);
+      animation: rise 3s linear forwards, flicker 1.2s infinite alternate;
+      z-index: 2;
+    }
+
+    @keyframes rise {
+      0% { transform: translateY(0) scale(1); opacity: 0.9; }
+      100% { transform: translateY(-120vh) scale(0.3); opacity: 0; }
+    }
+
+    @keyframes flicker {
+      0%, 100% { opacity: 0.7; transform: scale(1) translateX(0); box-shadow: 0 0 8px #ff6b00, 0 0 16px #ff3b00; }
+      50% { opacity: 1; transform: scale(1.4) translateX(2px); box-shadow: 0 0 12px #ff8b3d, 0 0 24px #ff6b00, 0 0 32px #ff3b00; }
+    }
+
+    /* Sections */
+    section { padding: 100px 5%; position: relative; }
+    .section-title {
+      font-family: 'Monument Extended', sans-serif; font-size: 3rem; text-align: center; margin-bottom: 3rem;
+      background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    /* About */
+    .about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; }
+    .about-card {
+      background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 20px; backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,59,0,0.2); transition: transform 0.3s;
+    }
+    .about-card:hover { transform: translateY(-10px); box-shadow: var(--glow); }
+
+    /* Timeline */
+    .timeline { max-width: 1000px; margin: 0 auto; position: relative; padding-left: 40px; }
+    .timeline::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 4px; background: var(--primary); transform: translateX(-50%); }
+    .timeline-item { position: relative; width: 50%; padding: 1rem 2rem; margin-bottom: 2rem; cursor: pointer; }
+    .timeline-item:nth-child(odd) { left: 0; }
+    .timeline-item:nth-child(even) { left: 50%; }
+    .timeline-item::after { content: ""; position: absolute; width: 20px; height: 20px; background: var(--primary); border-radius: 50%; top: 10px; right: -10px; box-shadow: var(--glow); }
+    .timeline-item:nth-child(even)::after { left: -10px; right: auto; }
+    .timeline-content {
+      background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 15px; border: 1px solid rgba(255,59,0,0.2);
+      position: relative; transition: all 0.3s; max-height: 80px; overflow: hidden;
+    }
+    .timeline-content.expanded { max-height: 500px; }
+
+    /* Footer */
+    footer { padding: 2rem 5%; background: #111; text-align: center; border-top: 1px solid var(--primary); }
+    footer a { color: var(--primary); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-logo">IGNITE</div>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#timeline">Timeline</a>
+      <a href="#prizes">Prizes</a>
+      <a href="#testimonials">Testimonials</a>
+      <a href="#mentors">Mentors</a>
+      <a href="#past-teams">Past Teams</a>
+      <a href="#faq">FAQ</a>
+      <a href="#register">Register</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="hero">
+    <div id="three-canvas"></div>
+    <div id="fire-container"></div>
+    <div class="hero-content">
+      <h1 class="logo" data-aos="fade-down">IGNITE 2025</h1>
+      <p class="tagline" data-aos="fade-up">Turn your startup dreams into reality in 48 hours</p>
+      <div class="countdown" data-aos="fade-up" data-aos-delay="200">
+        <div class="time-box"><span id="days">00</span><div class="time-label">Days</div></div>
+        <div class="time-box"><span id="hours">00</span><div class="time-label">Hours</div></div>
+        <div class="time-box"><span id="minutes">00</span><div class="time-label">Minutes</div></div>
+        <div class="time-box"><span id="seconds">00</span><div class="time-label">Seconds</div></div>
+      </div>
+      <button class="cta-button" onclick="openForm()">Join IGNITE 2025</button>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about">
+    <h2 class="section-title" data-aos="fade-up">About IGNITE</h2>
+    <div class="about-grid">
+      <div class="about-card" data-aos="fade-right">
+        <h3>Build Your Startup</h3>
+        <p>Transform ideas into functioning prototypes in 48 hours.</p>
+      </div>
+      <div class="about-card" data-aos="fade-up">
+        <h3>Collaborate</h3>
+        <p>Work with skilled teammates and mentors to shape your vision.</p>
+      </div>
+      <div class="about-card" data-aos="fade-left">
+        <h3>Win & Launch</h3>
+        <p>Pitch to investors and win prizes that kickstart your journey.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline Section -->
+  <section id="timeline">
+    <h2 class="section-title" data-aos="fade-up">Event Timeline</h2>
+    <div class="timeline">
+      <div class="timeline-item" onclick="toggleTimeline(this)">
+        <div class="timeline-content">Day 1: Kickoff, team formation, ideation workshops.</div>
+      </div>
+      <div class="timeline-item" onclick="toggleTimeline(this)">
+        <div class="timeline-content">Day 2: Mentorship sessions, prototype building.</div>
+      </div>
+      <div class="timeline-item" onclick="toggleTimeline(this)">
+        <div class="timeline-content">Day 3: Pitching, prize distribution, closing ceremony.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2025 IGNITE. All Rights Reserved. | <a href="#">Privacy Policy</a></p>
+  </footer>
+
+  <!-- AOS JS -->
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    // Initialize AOS
+    AOS.init({ duration: 1000 });
+
+    // Countdown Timer
+    const endDate = new Date("2025-12-31T00:00:00").getTime();
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const diff = endDate - now;
+      if (diff < 0) {
+        document.querySelector('.countdown').innerHTML = '<h3 style="color:var(--primary)">Event Started!</h3>';
+        return;
+      }
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      document.getElementById('days').innerText = days.toString().padStart(2, '0');
+      document.getElementById('hours').innerText = hours.toString().padStart(2, '0');
+      document.getElementById('minutes').innerText = minutes.toString().padStart(2, '0');
+      document.getElementById('seconds').innerText = seconds.toString().padStart(2, '0');
+    }
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // Timeline Toggle
+    function toggleTimeline(el) {
+      el.querySelector('.timeline-content').classList.toggle('expanded');
+    }
+
+    // FIRE PARTICLES SYSTEM
+    const fireContainer = document.getElementById('fire-container');
+    const heroSection = document.getElementById('hero');
+    let fireInterval = null;
+
+    function createFireParticle() {
+      const fire = document.createElement('div');
+      fire.classList.add('fire');
+      fire.style.left = Math.random() * window.innerWidth + 'px';
+      const size = Math.random() * 6 + 4;
+      fire.style.width = size + 'px';
+      fire.style.height = size + 'px';
+      const duration = Math.random() * 2 + 2;
+      fire.style.animationDuration = duration + 's';
+      fireContainer.appendChild(fire);
+      setTimeout(() => fire.remove(), duration * 1000 + 500);
+    }
+
+    function startFire() {
+      if (!fireInterval) {
+        fireInterval = setInterval(createFireParticle, 70);
+      }
+    }
+
+    function stopFire() {
+      if (fireInterval) {
+        clearInterval(fireInterval);
+        fireInterval = null;
+      }
+    }
+
+    // Start fire immediately
+    startFire();
+
+    // Observe hero section visibility
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          startFire();
+        } else {
+          stopFire();
+        }
+      });
+    }, { threshold: 0.1 });
+
+    observer.observe(heroSection);
+
+    // Registration placeholder
+    function openForm() {
+      alert("Registration form coming soon!");
+    }
+  </script>
+</body>
+</html>
